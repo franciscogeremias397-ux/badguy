@@ -1,0 +1,271 @@
+.start-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 36rpx 34rpx;
+  box-sizing: border-box;
+}
+
+.top-line {
+  position: absolute;
+  top: 40rpx;
+  left: 34rpx;
+  right: 34rpx;
+  border-bottom: 3rpx solid #111111;
+  padding-bottom: 16rpx;
+  color: #111111;
+  font-size: 22rpx;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.hero-card {
+  min-height: 86vh;
+  border: 8rpx solid #111111;
+  border-radius: 46rpx;
+  background: #ffffff;
+  padding: 90rpx 54rpx 58rpx;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.title {
+  font-size: 60rpx;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.subtitle {
+  margin-top: 22rpx;
+  font-size: 32rpx;
+  color: #111111;
+}
+
+.scan-box {
+  position: relative;
+  width: 420rpx;
+  height: 390rpx;
+  margin: 94rpx auto 54rpx;
+  overflow: hidden;
+}
+
+.scan-line {
+  position: absolute;
+  left: 52rpx;
+  right: 52rpx;
+  top: 58rpx;
+  height: 6rpx;
+  border-radius: 999rpx;
+  background: #111111;
+  opacity: 0.82;
+  animation: scanMove 2.8s ease-in-out infinite;
+}
+
+.corner {
+  position: absolute;
+  width: 52rpx;
+  height: 52rpx;
+  border-color: #111111;
+  border-style: solid;
+}
+
+.corner-lt {
+  left: 0;
+  top: 0;
+  border-width: 6rpx 0 0 6rpx;
+}
+
+.corner-rt {
+  right: 0;
+  top: 0;
+  border-width: 6rpx 6rpx 0 0;
+}
+
+.corner-lb {
+  left: 0;
+  bottom: 0;
+  border-width: 0 0 6rpx 6rpx;
+}
+
+.corner-rb {
+  right: 0;
+  bottom: 0;
+  border-width: 0 6rpx 6rpx 0;
+}
+
+.cube {
+  position: absolute;
+  left: 104rpx;
+  top: 78rpx;
+  width: 210rpx;
+  height: 210rpx;
+  transform: rotate(2deg);
+  animation: cubeFloat 3.6s ease-in-out infinite;
+}
+
+.cube-top {
+  width: 180rpx;
+  height: 70rpx;
+  margin: 0 auto;
+  border: 6rpx solid #111111;
+  transform: skewY(-22deg);
+  background: #f6f6f3;
+}
+
+.cube-body {
+  width: 184rpx;
+  height: 150rpx;
+  margin: -12rpx auto 0;
+  border: 6rpx solid #111111;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.heart {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 999rpx;
+  background: #111111;
+  color: #ffffff;
+  font-size: 50rpx;
+  line-height: 72rpx;
+  animation: heartPulse 1.8s ease-in-out infinite;
+}
+
+.spark {
+  position: absolute;
+  font-size: 38rpx;
+  font-weight: 900;
+  animation: twinkle 2.4s ease-in-out infinite;
+}
+
+.s1 {
+  left: 92rpx;
+  top: 80rpx;
+}
+
+.s2 {
+  right: 38rpx;
+  top: 122rpx;
+  animation-delay: 0.8s;
+}
+
+.s3 {
+  right: 92rpx;
+  bottom: 88rpx;
+  font-size: 32rpx;
+  animation-delay: 1.4s;
+}
+
+.moon {
+  position: absolute;
+  left: -12rpx;
+  top: 188rpx;
+  font-size: 56rpx;
+  font-weight: 900;
+  animation: moonDrift 4.2s ease-in-out infinite;
+}
+
+.tags {
+  display: flex;
+  justify-content: center;
+  gap: 22rpx;
+  color: #111111;
+  font-size: 24rpx;
+}
+
+.tags text + text::before {
+  content: "×";
+  margin-right: 22rpx;
+}
+
+.start-button {
+  margin-top: 86rpx;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: normal;
+}
+
+.count-text {
+  margin-top: 28rpx;
+  color: #777777;
+  font-size: 24rpx;
+}
+
+.count-number {
+  display: inline-block;
+  min-width: 88rpx;
+  color: #111111;
+  font-weight: 700;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.count-number.refreshing {
+  opacity: 0.82;
+  transform: translateY(-3rpx);
+}
+
+@keyframes scanMove {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.88;
+  }
+  55% {
+    opacity: 0.88;
+  }
+  100% {
+    transform: translateY(252rpx);
+    opacity: 0;
+  }
+}
+
+@keyframes cubeFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-14rpx) rotate(-1deg);
+  }
+}
+
+@keyframes heartPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  48% {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.36;
+    transform: scale(0.88) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.16) rotate(12deg);
+  }
+}
+
+@keyframes moonDrift {
+  0%,
+  100% {
+    transform: translateX(0) rotate(-8deg);
+  }
+  50% {
+    transform: translateX(12rpx) rotate(5deg);
+  }
+}

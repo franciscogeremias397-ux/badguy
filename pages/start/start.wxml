@@ -1,0 +1,41 @@
+<view class="page start-page">
+  <view class="top-line">
+    <text>RELATIONSHIP RISK REPORT</text>
+  </view>
+
+  <view class="hero-card">
+    <view class="title">鉴渣助手</view>
+    <view class="subtitle">多维渣值测试</view>
+
+    <view class="scan-box">
+      <view class="scan-line"></view>
+      <view class="corner corner-lt"></view>
+      <view class="corner corner-rt"></view>
+      <view class="corner corner-lb"></view>
+      <view class="corner corner-rb"></view>
+      <view class="cube">
+        <view class="cube-top"></view>
+        <view class="cube-body">
+          <view class="heart">♥</view>
+        </view>
+      </view>
+      <view class="spark s1">+</view>
+      <view class="spark s2">☆</view>
+      <view class="spark s3">✦</view>
+      <view class="moon">☾</view>
+    </view>
+
+    <view class="tags">
+      <text>科学测评</text>
+      <text>心理模型</text>
+      <text>中西结合</text>
+    </view>
+
+    <button class="primary-button start-button" bindtap="startTest">开始测试</button>
+    <view class="count-text">
+      <text>已完成测试 </text>
+      <text class="{{countRefreshing ? 'count-number refreshing' : 'count-number'}}">{{completedCount}}</text>
+      <text> 人次</text>
+    </view>
+  </view>
+</view>

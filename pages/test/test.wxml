@@ -1,0 +1,59 @@
+<view class="page test-page">
+  <view class="nav-title">鉴渣测试</view>
+
+  <view class="card form-card">
+    <view class="section-label">基本信息</view>
+    <view class="field-row">
+      <view class="field-label">姓名</view>
+      <input class="input" value="{{targetName}}" placeholder="请输入你的昵称" bindinput="onNameInput" />
+    </view>
+    <view class="field-row">
+      <view class="field-label">生日（公历）</view>
+      <picker mode="date" value="{{birthDate}}" start="1950-01-01" end="2011-12-31" bindchange="onBirthDateChange">
+        <view class="picker-value {{birthDate ? '' : 'placeholder'}}">{{birthDate || '选择公历生日'}}</view>
+      </picker>
+    </view>
+    <view class="field-row">
+      <view class="field-label">时间</view>
+      <picker mode="selector" range="{{hourOptions}}" bindchange="onBirthHourChange">
+        <view class="picker-value {{birthHour !== '' ? '' : 'placeholder'}}">{{birthHour !== '' ? hourOptions[birthHour] : '选择出生时间'}}</view>
+      </picker>
+    </view>
+    <view class="field-row">
+      <view class="field-label">性别</view>
+      <picker mode="selector" range="{{genderOptions}}" bindchange="onGenderChange">
+        <view class="picker-value {{gender ? '' : 'placeholder'}}">{{gender || '请选择'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="progress-block">
+    <view class="progress-head">
+      <text>第 {{currentIndex + 1}} 题 / 共 {{totalCount}} 题</text>
+      <text>{{progressText}}</text>
+    </view>
+    <view class="progress-track">
+      <view class="progress-fill" style="{{progressStyle}}"></view>
+    </view>
+  </view>
+
+  <view class="card question-card">
+    <view class="question-type">{{currentSectionTitle}}</view>
+    <view class="question-title">{{currentQuestion.prompt}}</view>
+    <radio-group class="answer-list" bindchange="onAnswerChange" data-id="{{currentQuestion.id}}">
+      <block wx:for="{{currentQuestion.options}}" wx:for-item="option" wx:key="value">
+        <label class="{{answers[currentQuestion.id] == option.value ? 'answer-item active' : 'answer-item'}}">
+          <text class="answer-code">{{index === 0 ? 'A' : index === 1 ? 'B' : index === 2 ? 'C' : 'D'}}</text>
+          <radio class="answer-radio" value="{{option.value}}" checked="{{answers[currentQuestion.id] == option.value}}" />
+          <text>{{option.label}}</text>
+        </label>
+      </block>
+    </radio-group>
+  </view>
+
+  <view class="action-row">
+    <view class="secondary-button nav-button" bindtap="prevQuestion">上一题</view>
+    <view wx:if="{{currentIndex < totalCount - 1}}" class="primary-button nav-button" bindtap="nextQuestion">下一题</view>
+    <view wx:else class="primary-button nav-button" bindtap="submit">开始分析</view>
+  </view>
+</view>

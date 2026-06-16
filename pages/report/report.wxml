@@ -1,0 +1,107 @@
+<view class="page report-page" wx:if="{{report}}">
+  <view class="report-header card">
+    <view class="report-topline">
+      <text>鉴渣助手 · 测评报告</text>
+      <text class="risk-badge {{report.level.className}}">{{report.level.name}}</text>
+    </view>
+    <view class="report-meta">{{report.targetName}} · {{report.gender}} · {{report.ageText}} · {{report.generatedAt}}</view>
+    <view class="score-row">
+      <view class="score-summary">
+        <view class="score-label">综合渣值</view>
+        <view class="score-number {{report.level.className}}">{{report.score}}<text>/100</text></view>
+      </view>
+      <image
+        class="risk-character-image"
+        src="assets/risk-characters/{{report.level.className}}.png"
+        mode="aspectFit"
+      />
+    </view>
+    <view class="conclusion-text">{{report.conclusion}}</view>
+    <view class="keyword-row" wx:if="{{report.keywords.length}}">
+      <block wx:for="{{report.keywords}}" wx:key="*this">
+        <text class="keyword">{{item}}</text>
+      </block>
+    </view>
+  </view>
+
+  <view class="card block-card">
+    <view class="card-title">整体画像</view>
+    <view class="body-text">{{report.portrait}}</view>
+  </view>
+
+  <view class="card block-card">
+    <view class="card-title">六大维度</view>
+    <block wx:for="{{report.modules}}" wx:key="key">
+      <view class="module-item">
+        <view class="module-head">
+          <view>
+            <view class="module-name">{{item.name}}</view>
+            <view class="module-rating">{{item.rating}}</view>
+          </view>
+          <view class="module-score">{{item.score}}</view>
+        </view>
+        <view class="bar-track">
+          <view class="bar-fill" style="{{item.barStyle}}"></view>
+        </view>
+        <view class="module-summary">{{item.summary}}</view>
+      </view>
+    </block>
+  </view>
+
+  <view class="card block-card">
+    <view class="card-title">中西结合</view>
+    <view class="body-text">{{report.combined.summary}}</view>
+    <view class="sub-card" wx:if="{{report.combined.eastern.available}}">
+      <view class="sub-title">四柱简析 · {{report.combined.eastern.score}} 分</view>
+      <view class="body-text">{{report.combined.eastern.summary}}</view>
+    </view>
+    <view class="sub-card" wx:if="{{report.combined.western.available}}">
+      <view class="sub-title">西方星盘 · {{report.combined.western.score}} 分</view>
+      <view class="body-text">{{report.combined.western.summary}}</view>
+    </view>
+    <view class="small-note" wx:if="{{report.combined.conflictNote}}">{{report.combined.conflictNote}}</view>
+  </view>
+
+  <view class="card block-card">
+    <view class="card-title">风险解释</view>
+    <view class="body-text">{{report.riskExplanation}}</view>
+  </view>
+
+  <view class="card block-card">
+    <view class="card-title">行动建议</view>
+    <block wx:for="{{report.suggestions}}" wx:key="*this">
+      <view class="suggestion-item">{{index + 1}}. {{item}}</view>
+    </block>
+  </view>
+
+  <view class="card poster-preview-card" wx:if="{{posterPath}}">
+    <view class="card-title">报告图片</view>
+    <image class="poster-preview" src="{{posterPath}}" mode="widthFix" bindtap="previewPoster" />
+  </view>
+
+  <view class="caveat">{{report.caveat}}</view>
+
+  <view class="bottom-actions">
+    <button class="primary-button bottom-button" loading="{{isGeneratingPoster}}" bindtap="generatePoster">
+      生成报告
+    </button>
+    <button class="secondary-button bottom-button" bindtap="savePoster">一键下载</button>
+    <button class="secondary-button bottom-button" open-type="share">分享好友</button>
+  </view>
+
+  <canvas
+    id="reportPoster"
+    canvas-id="reportPoster"
+    type="2d"
+    class="poster-canvas"
+    style="width: {{posterWidth}}px; height: {{posterHeight}}px;"
+  ></canvas>
+</view>
+
+<view class="page empty-page" wx:else>
+  <view class="card empty-card">
+    <view class="card-title">还没有报告</view>
+    <view class="muted-text">请先完成问卷，再生成测评报告。</view>
+    <button class="primary-button" bindtap="backToForm">返回填写</button>
+  </view>
+</view>

@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/start/start",
+    "pages/test/test",
+    "pages/analyzing/analyzing",
+    "pages/report/report"
+  ],
+  "window": {
+    "navigationBarTitleText": "鉴渣助手",
+    "navigationBarBackgroundColor": "#f6f6f3",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f6f6f3"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

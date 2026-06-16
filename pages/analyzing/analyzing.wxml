@@ -1,0 +1,46 @@
+<view class="page analyzing-page">
+  <view class="analysis-card card">
+    <view class="top-kicker">RELATIONSHIP RISK REPORT</view>
+    <view class="title">正在生成鉴渣评估</view>
+    <view class="subtitle">{{statusText}}</view>
+
+    <view class="analysis-visual">
+      <view class="scan-frame">
+        <view class="corner corner-lt"></view>
+        <view class="corner corner-rt"></view>
+        <view class="corner corner-lb"></view>
+        <view class="corner corner-rb"></view>
+        <view class="scan-line"></view>
+        <view class="radar-shape">
+          <view class="radar-ring r1"></view>
+          <view class="radar-ring r2"></view>
+          <view class="radar-ring r3"></view>
+          <view class="radar-axis a1"></view>
+          <view class="radar-axis a2"></view>
+          <view class="radar-axis a3"></view>
+          <view class="radar-core"></view>
+        </view>
+        <view class="spark s1">+</view>
+        <view class="spark s2">✦</view>
+        <view class="spark s3">☆</view>
+      </view>
+    </view>
+
+    <view class="progress-head">
+      <text>分析进度</text>
+      <text>{{progressText}}</text>
+    </view>
+    <view class="progress-track">
+      <view class="progress-fill" style="{{progressStyle}}"></view>
+    </view>
+
+    <view class="step-list">
+      <block wx:for="{{stepItems}}" wx:key="text">
+        <view class="{{item.active ? 'step-item active' : 'step-item'}}">
+          <view class="step-dot"></view>
+          <text>{{item.text}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+</view>

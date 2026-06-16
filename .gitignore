@@ -1,0 +1,21 @@
+.DS_Store
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+coverage/
+.env
+.env.*
+*.local
+*.log
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# WeChat DevTools local-only files
+project.private.config.json
+
+# Codex/local handoff and preview artifacts
+sessions/
