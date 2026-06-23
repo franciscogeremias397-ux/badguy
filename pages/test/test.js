@@ -25,6 +25,19 @@ Page({
     progressStyle: "width: 0%;"
   },
 
+  onLoad() {
+    this.enableShareMenu();
+  },
+
+  enableShareMenu() {
+    if (typeof wx.showShareMenu === "function") {
+      wx.showShareMenu({
+        withShareTicket: true,
+        menus: ["shareAppMessage"]
+      });
+    }
+  },
+
   onNameInput(event) {
     this.setData({ targetName: event.detail.value });
   },
@@ -119,5 +132,19 @@ Page({
       answers: this.data.answers
     });
     wx.navigateTo({ url: "/pages/analyzing/analyzing" });
+  },
+
+  onShareAppMessage() {
+    return {
+      title: "鉴渣助手｜30题生成关系风险报告",
+      path: "/pages/start/start"
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: "鉴渣助手｜30题生成关系风险报告",
+      query: ""
+    };
   }
 });

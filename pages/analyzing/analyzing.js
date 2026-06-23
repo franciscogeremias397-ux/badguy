@@ -20,6 +20,7 @@ Page({
   },
 
   onLoad() {
+    this.enableShareMenu();
     this.startAnalysis();
   },
 
@@ -35,6 +36,15 @@ Page({
     if (this.finishTimer) {
       clearTimeout(this.finishTimer);
       this.finishTimer = null;
+    }
+  },
+
+  enableShareMenu() {
+    if (typeof wx.showShareMenu === "function") {
+      wx.showShareMenu({
+        withShareTicket: true,
+        menus: ["shareAppMessage"]
+      });
     }
   },
 
@@ -88,5 +98,19 @@ Page({
         console.error("analysis failed", error);
       }
     }, 3400);
+  },
+
+  onShareAppMessage() {
+    return {
+      title: "鉴渣助手｜生成你的关系风险识别报告",
+      path: "/pages/start/start"
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: "鉴渣助手｜关系风险识别报告",
+      query: ""
+    };
   }
 });

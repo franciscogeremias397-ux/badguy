@@ -7,6 +7,7 @@ const POSTER_RENDER_DELAY = 120;
 const POSTER_EXPORT_DELAY = 420;
 const POSTER_EXPORT_RETRY_DELAYS = [0, 900, 2200, 4200, 6500];
 const POSTER_EXPORT_TIMEOUT = 14000;
+const SHARE_TITLE = "鉴渣助手｜生成你的关系风险识别报告";
 const RISK_COLORS = {
   "very-low": "#2f8f5b",
   low: "#4d8fcb",
@@ -352,7 +353,7 @@ function exportPosterCanvas(canvas, height, resolve, reject) {
     if (settled) {
       return;
     }
-    wx.canvasToTempFilePath({
+    const options = {
       canvas,
       x: 0,
       y: 0,
@@ -365,7 +366,9 @@ function exportPosterCanvas(canvas, height, resolve, reject) {
       fail: error => {
         lastError = error;
       }
-    });
+    };
+
+    wx.canvasToTempFilePath(options);
   }
 
   return function startExport() {
@@ -460,13 +463,24 @@ Page({
     posterPath: "",
     posterWidth: POSTER_WIDTH,
     posterHeight: POSTER_INITIAL_HEIGHT,
-    isGeneratingPoster: false
+    isGeneratingPoster: false,
+    isSavingPoster: false
   },
 
   onLoad() {
+    this.enableShareMenu();
     const report = wx.getStorageSync("latestReport");
     if (report) {
       this.setData({ report });
+    }
+  },
+
+  enableShareMenu() {
+    if (typeof wx.showShareMenu === "function") {
+      wx.showShareMenu({
+        withShareTicket: true,
+        menus: ["shareAppMessage"]
+      });
     }
   },
 
@@ -474,7 +488,8 @@ Page({
     wx.navigateBack();
   },
 
-  generatePoster() {
+  generatePoster(options) {
+    const shouldToast = !(options && options.silent);
     if (!this.data.report || this.data.isGeneratingPoster) {
       return Promise.resolve(this.data.posterPath);
     }
@@ -483,7 +498,9 @@ Page({
       isGeneratingPoster: true,
       posterPath: ""
     });
-    wx.showLoading({ title: "生成报告中" });
+    if (shouldToast) {
+      wx.showLoading({ title: "生成报告中" });
+    }
 
     return new Promise((resolve, reject) => {
       try {
@@ -497,20 +514,24 @@ Page({
           posterPath: filePath,
           isGeneratingPoster: false
         });
-        wx.hideLoading();
-        wx.showToast({
-          title: "图片已生成",
-          icon: "success"
-        });
+        if (shouldToast) {
+          wx.hideLoading();
+          wx.showToast({
+            title: "图片已生成",
+            icon: "success"
+          });
+        }
         return filePath;
       })
       .catch(error => {
         this.setData({ isGeneratingPoster: false });
-        wx.hideLoading();
-        wx.showToast({
-          title: "生成失败，请重试",
-          icon: "none"
-        });
+        if (shouldToast) {
+          wx.hideLoading();
+          wx.showToast({
+            title: "生成失败，请重试",
+            icon: "none"
+          });
+        }
         console.error("generate poster failed", error);
         throw error;
       });
@@ -601,51 +622,103 @@ Page({
     setTimeout(startExport, POSTER_EXPORT_DELAY);
   },
 
-  savePoster() {
-    const save = filePath => {
-      wx.saveImageToPhotosAlbum({
-        filePath,
-        success: () => {
-          wx.showToast({
-            title: "已保存到相册",
-            icon: "success"
+  ensureAlbumPermission() {
+    return new Promise((resolve, reject) => {
+      const openAlbumSetting = () => {
+        wx.showModal({
+          title: "需要相册权限",
+          content: "请允许保存到相册，才能一键下载报告图片。",
+          confirmText: "去设置",
+          success: modalResult => {
+            if (!modalResult.confirm) {
+              reject(new Error("用户取消相册授权"));
+              return;
+            }
+            wx.openSetting({
+              success: settingResult => {
+                if (settingResult.authSetting && settingResult.authSetting["scope.writePhotosAlbum"]) {
+                  resolve();
+                } else {
+                  reject(new Error("未开启相册权限"));
+                }
+              },
+              fail: reject
+            });
+          },
+          fail: reject
+        });
+      };
+
+      wx.getSetting({
+        success: result => {
+          const authSetting = result.authSetting || {};
+          if (authSetting["scope.writePhotosAlbum"]) {
+            resolve();
+            return;
+          }
+          if (authSetting["scope.writePhotosAlbum"] === false) {
+            openAlbumSetting();
+            return;
+          }
+          wx.authorize({
+            scope: "scope.writePhotosAlbum",
+            success: resolve,
+            fail: openAlbumSetting
           });
         },
-        fail: error => {
-          const message = error && error.errMsg ? error.errMsg : "";
-          if (
-            message.indexOf("auth deny") >= 0
-            || message.indexOf("auth denied") >= 0
-            || message.indexOf("authorize no response") >= 0
-            || message.indexOf("scope.writePhotosAlbum") >= 0
-            || message.indexOf("permission") >= 0
-          ) {
-            wx.showModal({
-              title: "需要相册权限",
-              content: "请允许保存到相册，才能一键下载报告图片。",
-              confirmText: "去设置",
-              success: modalResult => {
-                if (modalResult.confirm) {
-                  wx.openSetting();
-                }
-              }
-            });
-          } else {
-            wx.showToast({
-              title: "保存失败，请重试",
-              icon: "none"
-            });
-          }
-        }
+        fail: reject
       });
-    };
+    });
+  },
 
-    if (this.data.posterPath) {
-      save(this.data.posterPath);
+  saveImage(filePath) {
+    return new Promise((resolve, reject) => {
+      wx.saveImageToPhotosAlbum({
+        filePath,
+        success: resolve,
+        fail: reject
+      });
+    });
+  },
+
+  savePoster() {
+    if (this.data.isGeneratingPoster || this.data.isSavingPoster) {
       return;
     }
 
-    this.generatePoster().then(save).catch(() => {});
+    this.setData({ isSavingPoster: true });
+    wx.showLoading({ title: this.data.posterPath ? "保存中" : "生成中" });
+
+    const posterPromise = this.data.posterPath
+      ? Promise.resolve(this.data.posterPath)
+      : this.generatePoster({ silent: true });
+
+    posterPromise
+      .then(filePath => this.ensureAlbumPermission().then(() => filePath))
+      .then(filePath => this.saveImage(filePath))
+      .then(() => {
+        this.setData({ isSavingPoster: false });
+        wx.hideLoading();
+        wx.showToast({
+          title: "已保存到相册",
+          icon: "success"
+        });
+      })
+      .catch(error => {
+        this.setData({ isSavingPoster: false });
+        wx.hideLoading();
+        const message = error && error.errMsg ? error.errMsg : String(error && error.message || "");
+        const isAuthError = message.indexOf("auth") >= 0
+          || message.indexOf("authorize") >= 0
+          || message.indexOf("permission") >= 0
+          || message.indexOf("scope.writePhotosAlbum") >= 0
+          || message.indexOf("相册权限") >= 0;
+        wx.showToast({
+          title: isAuthError ? "请开启相册权限" : "下载失败，请重试",
+          icon: "none"
+        });
+        console.error("save poster failed", error);
+      });
   },
 
   previewPoster() {
@@ -660,10 +733,20 @@ Page({
 
   onShareAppMessage() {
     const report = this.data.report || {};
+    const typeName = report.relationshipType && report.relationshipType.shortName
+      ? report.relationshipType.shortName
+      : "关系风险报告";
     const scoreText = report.score !== undefined ? `${report.score}分` : "测评报告";
     return {
-      title: `我生成了一份鉴渣助手报告：${scoreText}`,
+      title: `我生成了一份鉴渣助手报告：${typeName} · ${scoreText}`,
       path: "/pages/start/start"
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: SHARE_TITLE,
+      query: ""
     };
   }
 });

@@ -7,6 +7,7 @@ Page({
   },
 
   onLoad() {
+    this.enableShareMenu();
     this.startCountRefresh();
   },
 
@@ -59,5 +60,28 @@ Page({
     wx.navigateTo({
       url: "/pages/test/test"
     });
+  },
+
+  enableShareMenu() {
+    if (typeof wx.showShareMenu === "function") {
+      wx.showShareMenu({
+        withShareTicket: true,
+        menus: ["shareAppMessage"]
+      });
+    }
+  },
+
+  onShareAppMessage() {
+    return {
+      title: "鉴渣助手｜生成你的关系风险识别报告",
+      path: "/pages/start/start"
+    };
+  },
+
+  onShareTimeline() {
+    return {
+      title: "鉴渣助手｜关系风险识别报告",
+      query: ""
+    };
   }
 });

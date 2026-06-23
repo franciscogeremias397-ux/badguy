@@ -82,11 +82,28 @@
   <view class="caveat">{{report.caveat}}</view>
 
   <view class="bottom-actions">
-    <button class="primary-button bottom-button" loading="{{isGeneratingPoster}}" bindtap="generatePoster">
-      生成报告
+    <button
+      class="primary-button bottom-button bottom-main-button"
+      loading="{{isGeneratingPoster || isSavingPoster}}"
+      disabled="{{isGeneratingPoster || isSavingPoster}}"
+      bindtap="savePoster"
+    >
+      {{posterPath ? '保存到相册' : '生成并保存'}}
     </button>
-    <button class="secondary-button bottom-button" bindtap="savePoster">一键下载</button>
-    <button class="secondary-button bottom-button" open-type="share">分享好友</button>
+    <button
+      class="secondary-button bottom-button"
+      disabled="{{isGeneratingPoster || isSavingPoster || !posterPath}}"
+      bindtap="previewPoster"
+    >
+      预览图片
+    </button>
+    <button
+      class="secondary-button bottom-button"
+      disabled="{{isGeneratingPoster || isSavingPoster}}"
+      open-type="share"
+    >
+      转发好友
+    </button>
   </view>
 
   <canvas

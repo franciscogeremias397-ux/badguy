@@ -11,6 +11,11 @@
     "navigationBarTextStyle": "black",
     "backgroundColor": "#f6f6f3"
   },
+  "permission": {
+    "scope.writePhotosAlbum": {
+      "desc": "用于将生成的关系风险报告图片保存到相册"
+    }
+  },
   "style": "v2",
   "sitemapLocation": "sitemap.json"
 }
